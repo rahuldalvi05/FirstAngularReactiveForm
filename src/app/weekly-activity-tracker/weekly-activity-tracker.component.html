@@ -1,0 +1,140 @@
+<div class="container">
+    <h2 style="margin: 45px;">Weekly Activity Tracker</h2>
+    <hr>
+        <form style="margin:35px" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="tower">Tower</label>
+                <select class="form-control" id="tower" formControlName="tower"> 
+                  <option>Please Select</option>  
+                  <option value="legacy">Legacy</option>
+                  <option value="mes">MES</option>
+                  
+                </select>
+                <span 
+                *ngIf="!signupForm.get('tower').valid && signupForm.get('tower').touched"
+                class="help-block">Please Select a Valid Tower</span>
+              </div>
+            <div class="form-floating mb-3">
+                <label for="site">Site</label>
+                <input type="text" class="form-control" id="site"
+                formControlName="site"
+                >
+                <span
+                class="help-block"
+                *ngIf="!signupForm.get('site').valid && signupForm.get('site').touched"
+                >
+                Please Enter Valid Site
+                </span>
+                
+              </div>
+              <div class="form-floating">
+                <label for="taskNumber">Task Number</label>
+                <input type="text" class="form-control" id="task" formControlName="task">
+                <span
+                class="help-block"
+                *ngIf="!signupForm.get('task').valid && signupForm.get('task').touched"
+                >
+                Please Enter Valid Task
+                </span>
+            </div>
+            <div class="form-floating mb-3" style="margin-top: 15px;">
+                <label for="detail">Details</label>
+                <textarea class="form-control" id="details" rows="5" formControlName="details"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="activitydate" style="margin-top: 5px;"> Received On</label>
+
+              <form class="form-inline">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input class="form-control" placeholder="dd/mm/yyyy"
+                           name="d1" #c1="ngModel" [(ngModel)]="model1" ngbDatepicker #d1="ngbDatepicker">
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <span>
+                {{model1}}
+              </span>
+            
+              <div class="form-group">
+                <label for="activitydate" style="margin-top: 15px;"> Activity Date</label>
+              <form class="form-inline">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input class="form-control" placeholder="dd/mm/yyyy"
+                           name="d2" #c2="ngModel" [(ngModel)]="model2" ngbDatepicker #d2="ngbDatepicker">
+                    <div class="input-group-append">
+                      <i class="bi bi-calendar"></i>
+                      <button class="btn btn-outline-secondary calendar" (click)="d2.toggle()" type="button"></button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <span>
+                {{model2}}
+              </span>
+              </div>
+            </div>
+
+           
+
+            <div class="form-group">
+                <label for="tower">Planned Resources</label>
+                <select class="form-control" id="plannedResources" formControlName="plannedResources">
+                  <option >Please Select</option>  
+                  <option>Legacy</option>
+                  <option>MES</option>
+                  
+                </select>
+                <span
+                class="help-block"
+                *ngIf="!signupForm.get('plannedResources').valid && signupForm.get('plannedResources').touched"
+                >
+                Please Select Valid Planned Resources
+                </span>
+              </div>
+              <div class="form-group">
+                <label for="tower">Responsible</label>
+                <select class="form-control" id="responsible" formControlName="responsible"> 
+                  <option >Please Select</option>  
+                  <option value="legacy">Legacy</option>
+                  <option value="mes">  MES</option>
+                  
+                </select>
+                <span
+                class="help-block"
+                *ngIf="!signupForm.get('responsible').valid && signupForm.get('responsible').touched"
+                >
+                Please Select Valid Option
+                </span>
+                
+              </div>
+              <div class="form-group">
+                <label for="tower">Status</label>
+                <select class="form-control" id="status" formControlName="status">
+                  <option >Please Select</option>  
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
+                  
+                </select>
+                <span
+                class="help-block"
+                *ngIf="!signupForm.get('status').valid && signupForm.get('status').touched"
+                >
+                Please Select Valid Option
+                </span>
+                
+              </div>
+              
+              
+              <div class="form-group"  style="text-align: center;">
+                <button type="submit" class="btn btn-success">Save</button>
+
+              </div>
+
+        </form>
+</div>
