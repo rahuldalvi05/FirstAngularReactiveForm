@@ -10,10 +10,13 @@ import json
 import sqlite3
 from datetime import datetime
 import flask_excel as excel
-
+from flask_cors import CORS, cross_origin
+from flask import request
+from json import dumps
 app = Flask(__name__)
 jwt = JWTManager(app)
 api = Api(app)
+CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -197,12 +200,37 @@ class Weeklyform(Resource):
 class Allforms(Resource):
     def get(self):
         return Weeklytrackerform.retun_data()
-@app.route('/')
+@app.route('/',methods=['GET'])
 def index():
-    return jsonify({'message': 'Hello, World!'})
+    print(request.data)
+    return jsonify({'message': 'Hello, World'})
+
+@app.route('/login/add/',methods=['POST'])
+def index2():
+    y = json.loads(request.data)
+    print(y['site'])
+    return jsonify({'message': 'Hello, World'})
+    
+
+@app.route('/add', methods=['POST'])
+def create_form():
+    data=json.loads(request.data)
+    #datas = parsers.parse_args()
+    print(data)
+    return {'message':'Hi'}
+    # new_form = Weeklytrackerform(tower = datas['tower'],site = datas['site'],tasknumber = datas['tasknumber'],
+    # Details = datas['Details'],Receiveddate = datetime.strptime(datas['Receiveddate'], '%d-%m-%Y %H:%M'),
+    # Activitydate = datetime.strptime(datas['Activitydate'], '%d-%m-%Y %H:%M'),PlannedResource = datas['PlannedResource'],
+    # Responsible = datas['Responsible'],Status = datas['Status'])
+    # try:
+    #     new_form.save_to_db()
+    #     return {'message': 'The New Form is created'}
+    # except:
+    #     return {'message': 'Something went wrong'}, 500
 
 
 
+ 
 api.add_resource(UserRegistration, '/registration')
 api.add_resource(UserLogin, '/login')
 api.add_resource(UserLogoutAccess, '/logout/access')
@@ -210,8 +238,8 @@ api.add_resource(UserLogoutRefresh, '/logout/refresh')
 api.add_resource(TokenRefresh, '/token/refresh')
 api.add_resource(AllUsers, '/users')
 api.add_resource(SecretResource, '/secret')
-api.add_resource(Weeklyform, '/login/add')
+api.add_resource(Weeklyform, '/add1')
 api.add_resource(Allforms, '/login/export')
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(host='0.0.0.0',port=5000)

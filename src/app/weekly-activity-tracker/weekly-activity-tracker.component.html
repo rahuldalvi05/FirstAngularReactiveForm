@@ -6,8 +6,8 @@
                 <label for="tower">Tower</label>
                 <select class="form-control" id="tower" formControlName="tower"> 
                   <option>Please Select</option>  
-                  <option value="legacy">Legacy</option>
-                  <option value="mes">MES</option>
+                  <option value="legacy">{{tower[0]}}</option>
+                  <option value="mes">{{tower[1]}}</option>
                   
                 </select>
                 <span 
@@ -42,41 +42,42 @@
                 <textarea class="form-control" id="details" rows="5" formControlName="details"></textarea>
             </div>
             
-            <div class="form-group">
+            <div class="form-group" >
               <label for="activitydate" style="margin-top: 5px;"> Received On</label>
 
-              <form class="form-inline">
-                <div class="form-group">
+             
+                <div class="form-group"  style="margin-right: 75%;">
                   <div class="input-group">
                     <input class="form-control" placeholder="dd/mm/yyyy"
-                           name="d1" #c1="ngModel" [(ngModel)]="model1" ngbDatepicker #d1="ngbDatepicker">
+                           name="d1" 
+                           formControlName="receivedDate"
+                           ngbDatepicker #d1="ngbDatepicker"
+                           
+                           >
                     <div class="input-group-append">
                       <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
                     </div>
                   </div>
                 </div>
-              </form>
-              <span>
-                {{model1}}
-              </span>
             
               <div class="form-group">
                 <label for="activitydate" style="margin-top: 15px;"> Activity Date</label>
-              <form class="form-inline">
-                <div class="form-group">
+              
+                <div class="form-group" style="margin-right: 75%;">
                   <div class="input-group">
                     <input class="form-control" placeholder="dd/mm/yyyy"
-                           name="d2" #c2="ngModel" [(ngModel)]="model2" ngbDatepicker #d2="ngbDatepicker">
+                           name="d2" 
+                           (dateSelect)="onDateSelect($event)" 
+                           ngbDatepicker #d2="ngbDatepicker"
+                           formControlName="activityDate"
+                           
+                           >
                     <div class="input-group-append">
                       <i class="bi bi-calendar"></i>
                       <button class="btn btn-outline-secondary calendar" (click)="d2.toggle()" type="button"></button>
                     </div>
                   </div>
                 </div>
-              </form>
-              <span>
-                {{model2}}
-              </span>
               </div>
             </div>
 
@@ -132,7 +133,9 @@
               
               
               <div class="form-group"  style="text-align: center;">
-                <button type="submit" class="btn btn-success">Save</button>
+                <button type="submit" class="btn btn-success"
+                [disabled]="!signupForm.valid"
+                >Save</button>
 
               </div>
 
