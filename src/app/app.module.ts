@@ -9,12 +9,15 @@ import { WeeklyActivityTrackerComponent } from './weekly-activity-tracker/weekly
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { WatTableComponent } from './wat-table/wat-table.component';
+import { AppService } from './app.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     WeeklyActivityTrackerComponent,
     DashboardComponent,
+    WatTableComponent,
    
   ],
   imports: [
@@ -27,7 +30,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule
   ],
   exports:[],
-  providers: [],
+  providers: [AppService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

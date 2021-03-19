@@ -1,0 +1,45 @@
+<div class="container">
+
+    <div 
+        style="margin-top: 25px;
+                margin-bottom:10px ;
+            "
+    >
+        <button type="button" class="btn btn-primary"
+            routerLink="/wat"
+        >Add Activity</button>
+    </div>
+
+    <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Activity Date</th>
+            <th scope="col">Site</th>
+            <th scope="col">Tower</th>
+            <th scope="col">Status</th>
+            <th scope="col">Details</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr 
+            *ngFor="let user of userTimeline; let i=index; "
+          >
+            <td>{{user.activityDate}}</td>
+            <td>{{user.site}}</td>
+            <td>{{user.tower}}</td>
+            <td>{{user.status}}</td>
+            <td>{{user.details}}</td>
+            <td>
+                <button type="button" class="btn btn-primary" 
+                  (click)="onEdit(i)"
+                >Edit</button>
+                <button type="button" class="btn btn-primary" style="margin-left: 10px;"
+                (click)="onDelete(i)"
+                >Delete</button>
+            </td>
+          </tr>
+          
+        </tbody>
+      </table>
+</div>

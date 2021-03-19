@@ -51,6 +51,7 @@
                     <input class="form-control" placeholder="dd/mm/yyyy"
                            name="d1" 
                            formControlName="receivedDate"
+                           (dateSelect)="onDateSelectR($event)" 
                            ngbDatepicker #d1="ngbDatepicker"
                            
                            >
@@ -67,7 +68,7 @@
                   <div class="input-group">
                     <input class="form-control" placeholder="dd/mm/yyyy"
                            name="d2" 
-                           (dateSelect)="onDateSelect($event)" 
+                           (dateSelect)="onDateSelectA($event)" 
                            ngbDatepicker #d2="ngbDatepicker"
                            formControlName="activityDate"
                            
