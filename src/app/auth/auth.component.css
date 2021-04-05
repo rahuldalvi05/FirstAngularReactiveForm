@@ -1,0 +1,9 @@
+#cover {
+    background: #222 center center no-repeat;
+    background-size: cover;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    position: relative;
+}

@@ -6,8 +6,10 @@
                 <label for="tower">Tower</label>
                 <select class="form-control" id="tower" formControlName="tower"> 
                   <option>Please Select</option> 
-                  <option value="mes">{{tower[0]}}</option> 
-                  <option value="legacy">{{tower[1]}}</option> 
+                  <option value="legacy">{{tower[0]}}</option> 
+                  <option value="mes">{{tower[1]}}</option> 
+                  
+                  
                   
                 </select>
                 <span 
@@ -48,12 +50,11 @@
              
                 <div class="form-group"  style="margin-right: 75%;">
                   <div class="input-group">
-                    <input class="form-control" placeholder="yyyy-mm-dd"
+                    <input class="form-control" placeholder="dd/mm/yyyy"
                            name="d1" 
                            formControlName="receivedDate"
                            (dateSelect)="onDateSelectR($event)" 
                            ngbDatepicker #d1="ngbDatepicker"
-                          
                            
                            >
                     <div class="input-group-append">
@@ -119,8 +120,8 @@
                 <label for="status">Status</label>
                 <select class="form-control" id="status" formControlName="status">
                   <option >Please Select</option>  
-                  <option value="pending">{{status[0]}}</option>
-                  <option value="completed">{{status[1]}}</option>
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
                   
                 </select>
                 <span
@@ -136,7 +137,7 @@
               <div class="form-group"  style="text-align: center;">
                 <button type="submit" class="btn btn-success"
                 [disabled]="!signupForm.valid"
-                >Save</button>
+                >Update</button>
 
               </div>
 

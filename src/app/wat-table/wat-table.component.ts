@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AppService } from '../app.service';
 import { Timeline } from '../shared/timeline.model';
@@ -11,7 +12,8 @@ import { Timeline } from '../shared/timeline.model';
 export class WatTableComponent implements OnInit {
 
   constructor(
-    private timeLine : AppService
+    private timeLine : AppService,
+    private router: Router
   ) { }
 
   userTimeline: Timeline[];
@@ -38,6 +40,9 @@ export class WatTableComponent implements OnInit {
   }
 
   onEdit(index: number){
+    this.timeLine.startedEditing.next(index);
+   
+    //this.router.navigate(['/wat'],{queryParams:{id: index}});
 
   }
   onDelete(index: number){

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { Timeline } from "./shared/timeline.model";
 
 @Injectable({
@@ -9,9 +9,10 @@ export class AppService{
     constructor(){}
 
     timelineChanged=new Subject<Timeline[]>();
+    startedEditing=new Subject<number>();
 
     private timeline: Timeline[]=[
-        new Timeline( 'rahul', 1,"xyz", "Hello", "mes","me",'pending',"2021-2-3","2021-2-3"),
+        new Timeline( 'rahul', 1,"xyz", "Hello", "mes","me",'completed',"2021-2-3","2021-2-3"),
         new Timeline( 'omkar', 4,"abc", "Hello", "legacy","me",'pending',"2021-2-5","2021-2-5"),
 
     ];
@@ -19,7 +20,9 @@ export class AppService{
     getTimeline(){
         return [...this.timeline];
     }
-
+    getTimelineEdited(index: number){
+        return this.timeline[index];
+    }
     addTimeline(timeline: Timeline){
         this.timeline.push(timeline);
         this.timelineChanged.next([...this.timeline]);
@@ -28,6 +31,11 @@ export class AppService{
     onDelete(index: number){
         this.timeline.splice(index,1);
         this.timelineChanged.next(this.timeline.slice())
+    }
+
+    updateTimeline(index: number,newTimeline: Timeline) {
+        this.timeline[index] = newTimeline;
+        this.timelineChanged.next(this.timeline.slice());
     }
     userTestStatus: { 
         site: string,

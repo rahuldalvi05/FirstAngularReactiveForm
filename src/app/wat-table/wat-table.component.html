@@ -25,14 +25,16 @@
           <tr 
             *ngFor="let user of userTimeline; let i=index; "
           >
-            <td>{{user.activityDate}}</td>
+            <td>{{user.activityDate | date:'fullDate'}}</td>
             <td>{{user.site}}</td>
             <td>{{user.tower}}</td>
             <td>{{user.status}}</td>
             <td>{{user.details}}</td>
             <td>
+              
                 <button type="button" class="btn btn-primary" 
                   (click)="onEdit(i)"
+                  routerLink="/wat/{{i}}"
                 >Edit</button>
                 <button type="button" class="btn btn-primary" style="margin-left: 10px;"
                 (click)="onDelete(i)"
