@@ -6,13 +6,31 @@
                 <label for="tower">Tower</label>
                 <select class="form-control" id="tower" formControlName="tower"> 
                   <option>Please Select</option> 
-                  <option value="mes">{{tower[0]}}</option> 
-                  <option value="legacy">{{tower[1]}}</option> 
+                  <option
+                  *ngFor="let t of tower"
+                  >
+                  {{t.towername}}
+                  </option>
+                  
                   
                 </select>
                 <span 
                 *ngIf="!signupForm.get('tower').valid && signupForm.get('tower').touched"
                 class="help-block">Please Select a Valid Tower</span>
+              </div>
+              <div class="form-floating mb-3">
+                <label for="site">Public Id</label>
+                <input type="public_id" class="form-control" id="public_id"
+                formControlName="public_id"
+                >
+                <span
+                class="help-block"
+                *ngIf="!signupForm.get('public_id').valid && signupForm.get('public_id').touched"
+              
+                >
+                Please Enter Valid Site
+                </span>
+                
               </div>
             <div class="form-floating mb-3">
                 <label for="site">Site</label>
@@ -22,6 +40,7 @@
                 <span
                 class="help-block"
                 *ngIf="!signupForm.get('site').valid && signupForm.get('site').touched"
+                style="background-color: solid red;"
                 >
                 Please Enter Valid Site
                 </span>
@@ -29,65 +48,42 @@
               </div>
               <div class="form-floating">
                 <label for="taskNumber">Task Number</label>
-                <input type="text" class="form-control" id="task" formControlName="task">
+                <input type="text" class="form-control" id="task" formControlName="tasknumber">
                 <span
                 class="help-block"
-                *ngIf="!signupForm.get('task').valid && signupForm.get('task').touched"
+                *ngIf="!signupForm.get('tasknumber').valid && signupForm.get('tasknumber').touched"
                 >
                 Please Enter Valid Task
                 </span>
             </div>
             <div class="form-floating mb-3" style="margin-top: 15px;">
                 <label for="detail">Details</label>
-                <textarea class="form-control" id="details" rows="5" formControlName="details"></textarea>
+                <textarea class="form-control" id="Details" rows="5" formControlName="Details"></textarea>
             </div>
             
-            <div class="form-group" >
-              <label for="activitydate" style="margin-top: 5px;"> Received On</label>
-
-             
-                <div class="form-group"  style="margin-right: 75%;">
-                  <div class="input-group">
-                    <input class="form-control" placeholder="yyyy-mm-dd"
-                           name="d1" 
-                           formControlName="receivedDate"
-                           (dateSelect)="onDateSelectR($event)" 
-                           ngbDatepicker #d1="ngbDatepicker"
-                          
-                           
-                           >
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
-                    </div>
-                  </div>
-                </div>
-            
-              <div class="form-group">
-                <label for="activitydate" style="margin-top: 15px;"> Activity Date</label>
-              
-                <div class="form-group" style="margin-right: 75%;">
-                  <div class="input-group">
-                    <input class="form-control" placeholder="dd/mm/yyyy"
-                           name="d2" 
-                           (dateSelect)="onDateSelectA($event)" 
-                           ngbDatepicker #d2="ngbDatepicker"
-                           formControlName="activityDate"
-                           
-                           >
-                    <div class="input-group-append">
-                      <i class="bi bi-calendar"></i>
-                      <button class="btn btn-outline-secondary calendar" (click)="d2.toggle()" type="button"></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-           
-
             <div class="form-group">
-                <label for="plannedResources">Planned Resources</label>
-                <select class="form-control" id="plannedResources" formControlName="plannedResources">
+              <label>Received On</label>
+              <div>
+              <input class="form-control" type="datetime-local" value="" id="Receiveddate"
+              formControlName="Receiveddate"
+              [max]='dateLimit'
+              required
+              >
+              </div>
+              </div>
+              <div class="form-group">
+                <label>Activity Date</label>
+                <div>
+                <input class="form-control" type="datetime-local" value="" id="Activitydate"
+                formControlName="Activitydate"
+                [min]="dateLimit"
+                >
+                 
+                </div>
+                </div>
+            <div class="form-group">
+                <label for="Resources">Planned Resources</label>
+                <select class="form-control" id="Resources" formControlName="Resources">
                   <option >Please Select</option>  
                   <option value="legacy">Legacy</option>
                   <option value="mes">MES</option>
@@ -95,21 +91,21 @@
                 </select>
                 <span
                 class="help-block"
-                *ngIf="!signupForm.get('plannedResources').valid && signupForm.get('plannedResources').touched"
+                *ngIf="!signupForm.get('Resources').valid && signupForm.get('Resources').touched"
                 >
                 Please Select Valid Planned Resources
                 </span>
               </div>
               <div class="form-group">
-                <label for="responsible">Responsible</label>
-                <select class="form-control" id="responsible" formControlName="responsible"> 
+                <label for="Responsible">Responsible</label>
+                <select class="form-control" id="Responsible" formControlName="Responsible"> 
                   <option >Please Select</option>  
                   <option value="legacy">Legacy</option>
                   <option value="mes">  MES</option>
                 </select>
                 <span
                 class="help-block"
-                *ngIf="!signupForm.get('responsible').valid && signupForm.get('responsible').touched"
+                *ngIf="!signupForm.get('Responsible').valid && signupForm.get('Responsible').touched"
                 >
                 Please Select Valid Option
                 </span>
@@ -120,7 +116,6 @@
                 <select class="form-control" id="status" formControlName="status">
                   <option >Please Select</option>  
                   <option value="pending">{{status[0]}}</option>
-                  <option value="completed">{{status[1]}}</option>
                   
                 </select>
                 <span

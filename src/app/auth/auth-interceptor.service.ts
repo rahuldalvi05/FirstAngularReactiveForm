@@ -29,14 +29,13 @@ export class AuthInterceptorService implements HttpInterceptor{
 
         // return next.handle(req);
        
+        
         return this.authService.user.pipe(take(1),exhaustMap(user=>{
             if(!user){
                 return next.handle(req);
             }
             const modifiedReq=req.clone({
-                setHeaders: {
-                           Authorization: `Bearer ${user._token}`
-                    }
+                headers: req.headers.set('X-Access-Token', `${user._token}`),
             })
             return next.handle(modifiedReq);
         }))

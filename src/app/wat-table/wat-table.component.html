@@ -1,15 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+td.a {
+  white-space: nowrap;
+}
+
+td.b {
+  white-space: pre-wrap;
+  width:200px;
+}
+
+td.c {
+  white-space: pre-wrap;
+  width:200px;
+}
+</style>
+</head>
+
+
 <div class="container">
 
-    <div 
+    <div
         style="margin-top: 25px;
-                margin-bottom:10px ;
-            "
-    >
-        <button type="button" class="btn btn-primary"
-            routerLink="/wat"
+                margin-bottom:10px ;">
+        <button type="button" class="btn btn-primary" 
+        routerLink="/wat"
         >Add Activity</button>
+        <button type="button" class="btn btn-primary"style="margin-left: 890px;"
+        (click)="download()"
+        >Export Data</button> 
     </div>
-
     <table class="table table-hover">
         <thead class="thead-dark">
           <tr>
@@ -22,26 +43,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr 
-            *ngFor="let user of userTimeline; let i=index; "
-          >
-            <td>{{user.activityDate | date:'fullDate'}}</td>
-            <td>{{user.site}}</td>
-            <td>{{user.tower}}</td>
-            <td>{{user.status}}</td>
-            <td>{{user.details}}</td>
+          <tr *ngFor="let obj of userData">
+            <td>{{obj.Activitydate}}</td>
+            <td class="b">{{obj.site}}</td>
+            <td>{{obj.tower}}</td>
+            <td>{{obj.status}}</td>
+            <td class="c">{{obj.Details}}</td>
             <td>
-              
-                <button type="button" class="btn btn-primary" 
-                  (click)="onEdit(i)"
-                  routerLink="/wat/{{i}}"
-                >Edit</button>
-                <button type="button" class="btn btn-primary" style="margin-left: 10px;"
-                (click)="onDelete(i)"
+                <button type="button" class="btn btn-link"style="margin-left: 100px;"
+                (click)="onEdit(i)"
+                routerLink="/wat/{{obj.id}}"
+                >Update</button>
+                <button type="button" class="btn btn-link" style="margin-right: 0px;"
+                (click)="deletedata(obj.id)"
                 >Delete</button>
             </td>
           </tr>
-          
+
         </tbody>
       </table>
 </div>

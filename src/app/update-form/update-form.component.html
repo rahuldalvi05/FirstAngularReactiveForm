@@ -1,145 +1,74 @@
 <div class="container">
-    <h2 style="margin: 45px;">Weekly Activity Tracker</h2>
-    <hr>
-        <form style="margin:35px" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-            <div class="form-group">
-                <label for="tower">Tower</label>
-                <select class="form-control" id="tower" formControlName="tower"> 
-                  <option>Please Select</option> 
-                  <option value="legacy">{{tower[0]}}</option> 
-                  <option value="mes">{{tower[1]}}</option> 
-                  
-                  
-                  
-                </select>
-                <span 
-                *ngIf="!signupForm.get('tower').valid && signupForm.get('tower').touched"
-                class="help-block">Please Select a Valid Tower</span>
-              </div>
-            <div class="form-floating mb-3">
-                <label for="site">Site</label>
-                <input type="text" class="form-control" id="site"
-                formControlName="site"
-                >
-                <span
-                class="help-block"
-                *ngIf="!signupForm.get('site').valid && signupForm.get('site').touched"
-                >
-                Please Enter Valid Site
-                </span>
-                
-              </div>
-              <div class="form-floating">
-                <label for="taskNumber">Task Number</label>
-                <input type="text" class="form-control" id="task" formControlName="task">
-                <span
-                class="help-block"
-                *ngIf="!signupForm.get('task').valid && signupForm.get('task').touched"
-                >
-                Please Enter Valid Task
-                </span>
+  <h2 style="margin: 45px;">Weekly Activity Tracker</h2>
+  <hr>
+      <form style="margin:35px"(ngSubmit)="getupdatedata()">
+        <div class="form-group">
+  <label>Tower</label>
+  <select class="form-control" name="tower" [(ngModel)]="update.tower">
+    <option value="">Select Tower</option>
+    <option *ngFor="let obj of dataArr">{{obj.towername}}</option>
+    </select>
+    </div>
+    <div class="form-group">
+      <label>Public ID</label>
+      <input type="text" class="form-control" name="public_id" [(ngModel)]="update.public_id">
+      </div>
+      <div class="form-group">
+        <label>Site</label>
+        <input type="text" class="form-control" name="site" [(ngModel)]="update.site">
+        </div>
+        <div class="form-group">
+          <label>Task Number</label>
+          <input type="text" class="form-control" name="tasknumber" [(ngModel)]="update.tasknumber">
+          </div>
+          <div class="form-group">
+            <label>Details</label>
+            <input type="text" class="form-control" name="Details" [(ngModel)]="update.Details">
             </div>
-            <div class="form-floating mb-3" style="margin-top: 15px;">
-                <label for="detail">Details</label>
-                <textarea class="form-control" id="details" rows="5" formControlName="details"></textarea>
-            </div>
-            
-            <div class="form-group" >
-              <label for="activitydate" style="margin-top: 5px;"> Received On</label>
-
-             
-                <div class="form-group"  style="margin-right: 75%;">
-                  <div class="input-group">
-                    <input class="form-control" placeholder="dd/mm/yyyy"
-                           name="d1" 
-                           formControlName="receivedDate"
-                           (dateSelect)="onDateSelectR($event)" 
-                           ngbDatepicker #d1="ngbDatepicker"
-                           
-                           >
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
-                    </div>
-                  </div>
-                </div>
-            
-              <div class="form-group">
-                <label for="activitydate" style="margin-top: 15px;"> Activity Date</label>
-              
-                <div class="form-group" style="margin-right: 75%;">
-                  <div class="input-group">
-                    <input class="form-control" placeholder="dd/mm/yyyy"
-                           name="d2" 
-                           (dateSelect)="onDateSelectA($event)" 
-                           ngbDatepicker #d2="ngbDatepicker"
-                           formControlName="activityDate"
-                           
-                           >
-                    <div class="input-group-append">
-                      <i class="bi bi-calendar"></i>
-                      <button class="btn btn-outline-secondary calendar" (click)="d2.toggle()" type="button"></button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-           
 
             <div class="form-group">
-                <label for="plannedResources">Planned Resources</label>
-                <select class="form-control" id="plannedResources" formControlName="plannedResources">
-                  <option >Please Select</option>  
-                  <option value="legacy">Legacy</option>
-                  <option value="mes">MES</option>
-                  
-                </select>
-                <span
-                class="help-block"
-                *ngIf="!signupForm.get('plannedResources').valid && signupForm.get('plannedResources').touched"
-                >
-                Please Select Valid Planned Resources
-                </span>
-              </div>
-              <div class="form-group">
-                <label for="responsible">Responsible</label>
-                <select class="form-control" id="responsible" formControlName="responsible"> 
-                  <option >Please Select</option>  
-                  <option value="legacy">Legacy</option>
-                  <option value="mes">  MES</option>
-                </select>
-                <span
-                class="help-block"
-                *ngIf="!signupForm.get('responsible').valid && signupForm.get('responsible').touched"
-                >
-                Please Select Valid Option
-                </span>
-                
-              </div>
-              <div class="form-group">
-                <label for="status">Status</label>
-                <select class="form-control" id="status" formControlName="status">
-                  <option >Please Select</option>  
-                  <option value="pending">Pending</option>
-                  <option value="completed">Completed</option>
-                  
-                </select>
-                <span
-                class="help-block"
-                *ngIf="!signupForm.get('status').valid && signupForm.get('status').touched"
-                >
-                Please Select Valid Option
-                </span>
-                
-              </div>
-              
-              
-              <div class="form-group"  style="text-align: center;">
-                <button type="submit" class="btn btn-success"
-                [disabled]="!signupForm.valid"
-                >Update</button>
+<label>Received On</label>
+<div>
+<input class="form-control" type="datetime-local" value="" id="Receiveddate"
+name="Receiveddate" [(ngModel)]="update.Receiveddate">
+</div>
+</div>
+<div class="form-group">
+<label>Activity Date</label>
+<div>
+<input class="form-control" type="datetime-local" value="" id="Activitydate"
+name="Activitydate" [(ngModel)]="update.Activitydate" required>
+</div>
+</div>
+    <div class="form-group">
+      <label>Resource</label>
+      <select class="form-control" name="Resource" [(ngModel)]="update.Resource">
+        <option value="">Select Resource</option>
+        <option *ngFor="let obj of resoArr">{{obj.resourcename}}</option>
+        </select>
+        </div>
 
-              </div>
+        <div class="form-group">
+          <label>Responsible</label>
+          <select class="form-control" name="Responsible" [(ngModel)]="update.Responsible">
+            <option value="">Select Responsible</option>
+            <option *ngFor="let obj of respArr">{{obj.responname}}</option>
+            </select>
+            </div>
 
-        </form>
+            <div class="form-group">
+              <label>Status</label>
+              <select class="form-control" name="status" [(ngModel)]="update.status">
+                <option value="">Select Status</option>
+                <option *ngFor="let obj of statArr">{{obj.statusname}}</option>
+                </select>
+                </div>
+
+
+            <div class="form-group"  style="text-align: center;">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="submit" class="btn btn-primary"style="margin-left:880px;" routerLink="/watTable">Go Back</button>
+            </div>
+
+      </form>
 </div>

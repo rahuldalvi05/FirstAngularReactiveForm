@@ -1,29 +1,28 @@
-<div class="style">
-
-    <div class="container py-5">
-
-        <div class="row text-center text-white mb-5">
-            <div class="col-lg-8 mx-auto">
-                </div>
-            </div><!-- End -->
+<div class="container">
+    <div class="main-timeline">
     
+                            <!-- start experience section-->
+                            <div class="timeline" *ngFor="let user of timeline">
+                                <div class="icon"></div>
+                                <div class="date-content">
+                                    <div class="date-outer">
+                                        <span class="date">
+                                                <span class="month">Event Date</span>
+                                        <span class="year">{{user.activityDate}}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="timeline-content">
+                                    <h5 class="title">{{user.details}}</h5>
+                                    <p class="description">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur ex sit amet massa scelerisque scelerisque. Aliquam erat volutpat. Aenean interdum finibus efficitur. Praesent dapibus dolor felis, eu ultrices elit molestie.
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- end experience section-->
     
-            <div class="row">
-                <div class="col-lg-7 mx-auto"
-                >
-                    
-                    <!-- Timeline -->
-                    <ul class="timeline" 
-                    
-                    >
-                        <li class="timeline-item bg-white rounded ml-3 p-4 shadow" *ngFor="let user of timelineUser">
-                            <div class="timeline-arrow"></div>
-                            <h2 class="h5 mb-0">Title of section 1</h2><span class="small text-gray"><i class="fa fa-clock-o mr-1"></i>{{user.activityDate | date:'fullDate'}}</span>
-                            <p class="text-small mt-2 font-weight-light">{{user.details}}</p>
-                        </li>
-                    </ul><!-- End -->
+                           
+                            <!-- end experience section-->
     
-                </div>
-            </div>
-        </div>
-</div>
+                        </div>
+    </div>

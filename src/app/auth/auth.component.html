@@ -1,7 +1,61 @@
+<form (ngSubmit)="f.form.valid && signup()"#f="ngForm"
+*ngIf="!isLoginMode"
+>
+  <div class="row">
+    <div class="col-md-3">
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="username">User Name</label>
+          <input type="name" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Enter User Name"
+          name="username" [(ngModel)]="register.username">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email"
+          name="email" [(ngModel)]="register.email">
+
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password"
+          name="password" [(ngModel)]="register.password">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Confirm Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Confirm Password" pattern="{{register.password}}" #cpass="ngModel"
+          name="confirmpassword" [(ngModel)]="confirmpassword">
+          <span class="text-danger" *ngIf="f.submitted && cpass.errors?.pattern" >Password and Confirm Password does not match!</span>
+        </div>
+          <div class="form-group">
+            <div class="form-control">
+              <label class="checkbox-inline">
+                <input type="checkbox" name="isActive" [(ngModel)]="register.isActive">Is Active
+                </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary"
+          type="submit"
+         
+          >
+          {{isLoginMode ? 'Login':'Sign Up'}}</button> |
+          <button type="submit" class="btn btn-primary" (click)="onSwitchMode()"
+          type="button"
+          >Switch to {{isLoginMode ? 'Sign Up':'Login'}}</button>
+        </div>
+
+    </div>
+</form>
+
+
+
+
 
 
 <div class="container"
-style="margin: 45px;">
+style="margin: 45px;"
+*ngIf="isLoginMode"
+>
     <div class="row">
         <div 
         class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto form p-4"
@@ -14,7 +68,7 @@ style="margin: 45px;">
         </div>
         <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)" *ngIf="!isLoading"> 
           <div class="form-group">
-            <label for="email">Email address:</label>
+            <label for="email">Username:</label>
             <input 
             type="email" 
             class="form-control"  
@@ -22,7 +76,6 @@ style="margin: 45px;">
             ngModel
             name="email"
             required
-            email
             >
         
           </div>

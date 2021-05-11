@@ -4,6 +4,9 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { User } from "./user.model";
 import { map, tap } from 'rxjs/operators';
 import { Router } from "@angular/router";
+import { Register } from "./register.model";
+import jwt_decode from "jwt-decode";
+import { Login } from "./login.model";
 
 export interface AuthResponseData{
     
@@ -13,6 +16,14 @@ export interface AuthResponseData{
     expiresIn: string;
     localId: string;
     registered?:boolean;
+}
+export interface Authdata{
+   status: number;
+   message: string;
+   token?:string;
+
+
+
 }
 
 @Injectable({
@@ -24,6 +35,11 @@ export class AuthService{
     token:string=null;
     private tokenExpirationTimer:any;
     loggedInuser=false;
+
+    data: any;
+    message: any;
+    status: any;
+    _token: any;
 
     private currentUserSubject: BehaviorSubject<AuthResponseData>;
     public currentUser: Observable<AuthResponseData>;
@@ -37,47 +53,87 @@ export class AuthService{
         return this.currentUserSubject.value;
     }
 
-    signup(email: string, password: string){
-     return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCwMu8y-W90nj0YgcCpDISsBj7M94wekBw',{
-            email: email,
-            password:password,
-            returnSecureToken:true
-        }).pipe(
+    signUpdata(registerData: Register){
+
+        return this.http.post<Authdata>('http://127.0.0.1:5000/createuser',
+            registerData
+        ).pipe(
             tap(
                 resData=>{
-                    this.handleAuthentication(
-                        resData.email,
-                        resData.localId,
-                        resData.idToken,
-                        +resData.expiresIn
-                    )
+                    
+                        //this.data=resData;
+                        //console.log(resData.status);
                 
                 }
             )
         )
     }
+    id:any;
+    exp:any;
+
+    logindata(loginData: Login){
+
+        
+        
+
+        return this.http.post<Authdata>('http://127.0.0.1:5000/login',
+            loginData
+        ).pipe(
+
+            tap(
+                resData=>{
+                    this.data=resData;
+                    console.log("Res Server:"+this.data.token);
+                    this.id = jwt_decode(this.data.token);
+                    console.log((this.id.exp));
+                    this.handleAuthenticationData(loginData.username,this.data.token,this.id.exp);
+                
+                }
+            )
+        )
+    }
+
+    // signup(email: string, password: string){
+    //  return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCwMu8y-W90nj0YgcCpDISsBj7M94wekBw',{
+    //         email: email,
+    //         password:password,
+    //         returnSecureToken:true
+    //     }).pipe(
+    //         tap(
+    //             resData=>{
+    //                 this.handleAuthentication(
+    //                     resData.email,
+    //                     resData.localId,
+    //                     resData.idToken,
+    //                     +resData.expiresIn
+    //                 )
+                
+    //             }
+    //         )
+    //     )
+    // }
 
 
    
-    login(email: string, password:string){
+    // login(email: string, password:string){
        
-        return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCwMu8y-W90nj0YgcCpDISsBj7M94wekBw',{
-            email: email,
-            password:password,
-            returnSecureToken:true
-        }).pipe(
-            tap(
-                resData=>{
-                    this.handleAuthentication(
-                        resData.email,
-                        resData.localId,
-                        resData.idToken,
-                        +resData.expiresIn)
+    //     return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCwMu8y-W90nj0YgcCpDISsBj7M94wekBw',{
+    //         email: email,
+    //         password:password,
+    //         returnSecureToken:true
+    //     }).pipe(
+    //         tap(
+    //             resData=>{
+    //                 this.handleAuthentication(
+    //                     resData.email,
+    //                     resData.localId,
+    //                     resData.idToken,
+    //                     +resData.expiresIn)
                 
-                }
-            )
-        )
-    }
+    //             }
+    //         )
+    //     )
+    // }
 
     logout(){
         this.user.next(null);
@@ -87,12 +143,12 @@ export class AuthService{
             clearTimeout(this.tokenExpirationTimer)
         }
         this.tokenExpirationTimer=null;
+
     }
 
     autoLogin(){
         const userData:{
-            email:string;
-            id: string;
+            user:string;
             _token:string;
             _tokenExpirationDate: string;
         }= JSON.parse(localStorage.getItem('userData'));
@@ -100,14 +156,14 @@ export class AuthService{
             return;
         }
 
-        const loadedUser=new User(userData.email,
-            userData.id,
+        const loadedUser=new User(
+            userData.user,
             userData._token,
-            new Date(userData._tokenExpirationDate
+            new Date(userData._tokenExpirationDate,
         ));
         if(loadedUser.token){
             this.user.next(loadedUser);
-            const expirationDuration=new Date(userData._tokenExpirationDate).getTime() - new Date().getTime()
+            const expirationDuration=new Date(userData._tokenExpirationDate).getTime()
             this.autoLogout(expirationDuration);
         }
     }
@@ -115,14 +171,31 @@ export class AuthService{
     autoLogout(expirationDate: number){
         this.tokenExpirationTimer= setTimeout(()=>{
             this.logout();
-        },expirationDate)
+        },5000000)
     }
 
-    private handleAuthentication(email: string, userId:string, token: string, expiresIn: number){
-        const expirationDate=new Date(new Date().getTime() + expiresIn*1000)
-        const user=new User(email,userId,token,expirationDate);
+    // private handleAuthentication(email: string, userId:string, token: string, expiresIn: number){
+    //     const expirationDate=new Date(new Date().getTime() + expiresIn*1000)
+    //     const user=new User(email,userId,token,expirationDate);
+    //     this.user.next(user);
+    //     this.autoLogout(expiresIn*1000);    
+    //     localStorage.setItem('userData',JSON.stringify(user))
+    // }
+    private handleAuthenticationData(userName:string,token: string, expiresIn: number){
+        const expirationDate2=new Date(expiresIn*1000);
+        console.log(expirationDate2);
+        const expirationDate=new Date((new Date().getTime()) + expiresIn)
+        const user=new User(userName,token,expirationDate);
         this.user.next(user);
-        this.autoLogout(expiresIn*1000);    
-        localStorage.setItem('userData',JSON.stringify(user))
+        this.autoLogout(expirationDate.getTime());    
+        localStorage.setItem('userData',JSON.stringify(user));
     }
+
+    getUser(){
+        return this.user.value;
+    }
+    // isLoggedIn(): boolean{
+    //     return this.user ? true : false;
+    // }
+   
 }   

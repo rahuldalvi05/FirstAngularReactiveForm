@@ -5,7 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { AppService } from '../app.service';
+import { DataStorageService } from '../shared/data-storage.service';
 import { Timeline } from '../shared/timeline.model';
+import { Update } from './update.model';
+import jwt_decode from "jwt-decode";
+
 
 @Component({
   selector: 'app-update-form',
@@ -13,87 +17,74 @@ import { Timeline } from '../shared/timeline.model';
   styleUrls: ['./update-form.component.css']
 })
 export class UpdateFormComponent implements OnInit {
+  formid: any;
+  data:any;
+  dataArr:any;
+  resoArr:any;
+  respArr:any;
+  statArr:any;
+  formArr:any;
+  token: any;
+  id: any;
+  public_id: any;
+  updates: any;
+  update = new Update();
+  datafs: any;
+  constructor(
+    private route: ActivatedRoute,
+    private httpClient: HttpClient,
+    private dataService:DataStorageService,
+    private routes: Router
+  ) { }
 
-
-  signupForm: FormGroup;
-  tower=['Legacy','MES'];
-
-  subscription: Subscription;
-  editMode = false;
-  editedItemIndex: number;
-  editedItem: Timeline;
-
-  constructor(private ngbCalendar: NgbCalendar, 
-    private dateAdapter: NgbDateAdapter<string>,
-    private http: HttpClient,
-    private service: AppService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute
-    ) { }
-    id: number
+  user:any;
   ngOnInit(): void {
-  
+    this.formid=this.route.snapshot.params.id;
+    this.update.id = this.formid;
+    this.gettowerdata();
+    this.getresourcedata();
+    this.getrespondata();
+    this.getstatusdata();
+    this.user=localStorage.getItem('userData');
+  console.log(this.user);
+    // this.token = localStorage.getItem('x-access-token');
+    //   this.id = jwt_decode(this.token);
+    //   this.public_id = this.id.id;
+    // this.update.public_id = this.public_id;
 
-      this.activatedRoute.params.subscribe(
-        params=>{
-          this.id=params.id
-          this.editMode=true;
-        }
-      )
-      const timeline=this.service.getTimelineEdited(this.id)
-      console.log(this.id);
-      
-        this.signupForm=new FormGroup({
-          site:new FormControl(timeline.site, Validators.required),
-          task:new FormControl(timeline.task,Validators.required),
-          tower:new FormControl(timeline.tower,Validators.required),
-          details:new FormControl(timeline.details),
-          plannedResources:new FormControl(timeline.plannedResources,Validators.required),
-          responsible:new FormControl(timeline.responsible,Validators.required),
-          status:new FormControl(timeline.status,Validators.required),
-          receivedDate:new FormControl(timeline.receivedDate),
-          activityDate:new FormControl(timeline.activityDate)
-        });
-      
-  
   }
+  gettowerdata()
+{
+  this.dataService.getTower().subscribe(res=>{
+    this.dataArr=res;
+  })
+}
+getresourcedata()
+{
+  this.dataService.getResource().subscribe(res=>{
+    this.resoArr=res;
 
-  finalDateR: any;
-  finalDateA: any;
+  })
+}
+getrespondata()
+{
+  this.dataService.getResponsible().subscribe(res=>{
+    this.respArr=res;
+  })
+}
+getstatusdata()
+{
+  this.dataService.getStatus().subscribe(res=>{
+    this.statArr=res;
+  })
+}
 
-  onDateSelectR(event) {
-    let year = event.year;
-    let month = event.month <= 9 ? '0' + event.month : event.month;;
-    let day = event.day <= 9 ? '0' + event.day : event.day;;
-    this.finalDateR = year + "-" + month + "-" + day;
-   }
-   onDateSelectA(event) {
-    let year = event.year;
-    let month = event.month <= 9 ? '0' + event.month : event.month;;
-    let day = event.day <= 9 ? '0' + event.day : event.day;;
-    this.finalDateA = year + "-" + month + "-" + day;
-   }
-   
-
-  onSubmit(){
-  
-    this.signupForm.value['activityDate']=this.finalDateA;
-    this.signupForm.value['receivedDate']=this.finalDateR;
-
-    const value=this.signupForm.value;
-    const newTimeline=new Timeline(value.site,value.task,value.tower,value.details,value.plannedResources,value.responsible,value.status,value.receivedDate,value.activityDate);
-    this.service.updateTimeline(this.id,newTimeline);
-    
-    
-   // console.log(this.service.getTimeline());
-    this.router.navigate(['watTable']);
-    
-    // this.http.post<any>('http://127.0.0.1:5000/login/add',this.signupForm.value).subscribe(
-      
-    //   )
+  getupdatedata()
+  {
+    this.dataService.updatedata(this.update).subscribe(res =>{
+    })
+    this.routes.navigate(['/watTable'])
   }
-
-
   
 
 }

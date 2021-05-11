@@ -10,6 +10,7 @@ import { WeeklyActivityTrackerComponent } from "./weekly-activity-tracker/weekly
 
 const appRoutes: Routes= [
     {path:'', redirectTo:'/auth',pathMatch:'full'},
+    
     {path:'wat',
     canActivate:[AuthGaurd],
     component:WeeklyActivityTrackerComponent },
@@ -22,9 +23,12 @@ const appRoutes: Routes= [
     {path: 'wat/:id',
     canActivate:[AuthGaurd],
      component: UpdateFormComponent},
+     
     {path:'auth', 
     canActivate:[AuthLoggedGaurd],
-    component: AuthComponent}
+    component: AuthComponent
+  },
+    
 
 ];
 

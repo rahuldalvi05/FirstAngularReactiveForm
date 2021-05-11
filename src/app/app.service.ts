@@ -1,6 +1,19 @@
 import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import {  Subject } from "rxjs";
 import { Timeline } from "./shared/timeline.model";
+
+export interface userStatusData{
+    site: string,
+    task: number, 
+    tower:string,
+    details: string, 
+    plannedResources: string ,
+    responsible: string,
+    status: string,
+    receivedDate: string,
+    activityDate:string
+
+}
 
 @Injectable({
     providedIn:'root'
@@ -10,11 +23,10 @@ export class AppService{
 
     timelineChanged=new Subject<Timeline[]>();
     startedEditing=new Subject<number>();
+    nameChanged=new Subject<string>();
+
 
     private timeline: Timeline[]=[
-        new Timeline( 'rahul', 1,"xyz", "Hello", "mes","me",'completed',"2021-2-3","2021-2-3"),
-        new Timeline( 'omkar', 4,"abc", "Hello", "legacy","me",'pending',"2021-2-5","2021-2-5"),
-
     ];
 
     getTimeline(){
@@ -37,6 +49,7 @@ export class AppService{
         this.timeline[index] = newTimeline;
         this.timelineChanged.next(this.timeline.slice());
     }
+
     userTestStatus: { 
         site: string,
         task: number, 
@@ -52,4 +65,6 @@ export class AppService{
       
       
     ];
+
+    userStatus: Subject<userStatusData[]>;
 }

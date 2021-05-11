@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
-import { NgbDate, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {  NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { WeeklyActivityTrackerComponent } from './weekly-activity-tracker/weekly-activity-tracker.component';
@@ -16,6 +16,7 @@ import { AuthComponent } from './auth/auth.component';
 import { LoadingSpinner } from './shared/loading/loading-spinner.component';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,8 +25,7 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     WatTableComponent,
     UpdateFormComponent,
     AuthComponent,
-    LoadingSpinner
-   
+    LoadingSpinner,   
   ],
   imports: [
     BrowserModule,
@@ -34,7 +34,9 @@ import { AuthInterceptorService } from './auth/auth-interceptor.service';
     NgbModule,
     HttpClientModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+ 
+  
   ],
   exports:[],
   providers: [AppService,

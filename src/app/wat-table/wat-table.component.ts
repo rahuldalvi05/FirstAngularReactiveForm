@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AppService } from '../app.service';
+import { DataStorageService } from '../shared/data-storage.service';
+import { getFormData } from '../shared/getFormData.model';
 import { Timeline } from '../shared/timeline.model';
 
 @Component({
@@ -13,42 +15,71 @@ export class WatTableComponent implements OnInit {
 
   constructor(
     private timeLine : AppService,
-    private router: Router
+    private router: Router,
+    private dataStorageService: DataStorageService
   ) { }
 
   userTimeline: Timeline[];
+  userData:getFormData[];
+  exportData:any;
   private subscription: Subscription;
 
 
   ngOnInit(): void {
+    this.exportSheetData();
+  this.dataStorageService.getWeeklyActivityData().subscribe(
+    res=>{
+      console.log(res);
+      this.userData=res;  
+    }
+  )
+    
   this.userTimeline=this.timeLine.getTimeline();
     
     this.subscription=this.timeLine.timelineChanged.subscribe(
       (timelines: Timeline[])=>{
-        console.log(timelines)
         this.userTimeline=timelines;
+
       
       }
     )
 
+
     console.log(this.userTimeline);
+    
     this.userTimeline.sort(function(a, b){ 
-      
+
       return new Date(b.activityDate).valueOf() - new Date(a.activityDate).valueOf(); 
   });
     
+  }
+  deletedata(id)
+  {
+    this.dataStorageService.deldata(id).subscribe(res =>{})
+    console.log('Deleted Successfully');
+    window.location.reload();
   }
 
   onEdit(index: number){
     this.timeLine.startedEditing.next(index);
    
-    //this.router.navigate(['/wat'],{queryParams:{id: index}});
+
 
   }
   onDelete(index: number){
     this.timeLine.onDelete(index);
   }
+  exportSheetData()
+  {
+    this.dataStorageService.downloaddata().subscribe(res=>{
+      this.exportData=res;
+    })
+  }
 
+  download()
+  {
+    this.dataStorageService.downloadFile(this.exportData, 'formdata')
+  }
 
  // timelineUser=this.timeLine.userTestStatus;
 }
