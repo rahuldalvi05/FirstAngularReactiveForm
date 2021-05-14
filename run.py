@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, Response, send_file,render_template
 from flask_sqlalchemy import SQLAlchemy
 import uuid # for public id
 from  werkzeug.security import generate_password_hash, check_password_hash
@@ -9,15 +9,24 @@ from functools import wraps
 from flask_restful import Resource, reqparse
 from flask_restful import Api
 from flask_cors import CORS, cross_origin
-import pandas as pd
-import json
 from sqlalchemy import update
+import json
+import pandas as pd
+import csv
+from flask_mail import Mail,Message
 # creates Flask object
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = "rahulwmg767@gmail.com"
+app.config['MAIL_PASSWORD'] = "Test@1234"
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 # creates SQLALCHEMY object
 db = SQLAlchemy(app)
@@ -61,16 +70,20 @@ class Weeklytracker(db.Model):
 #signup route
 @app.route('/createuser', methods=['POST'])
 def UserRegistration():
-    data = request.form
-
+    data = request.data
+    data = json.loads(data)
     #gets username email and Password
     username, email = data.get('username'), data.get('email')
     password = data.get('password')
     isActive = data.get('isActive')
-
+    if isActive == "true":
+        isActive = 1
+    elif isActive == None:
+        isActive = 0
     #checking if the user is already existing
     user = User.query.filter_by(username=username).first()
-    if not user:
+    em = User.query.filter_by(email=email).first()
+    if not user and not em:
         user = User(
         id = str(uuid.uuid4()),
         username = username,
@@ -82,9 +95,9 @@ def UserRegistration():
         db.session.add(user)
         db.session.commit()
 
-        return make_response('Successfully registered!')
+        return jsonify({'message':'User Registered Successfully!','status':1})
     else:
-        return make_response('User already exist. Please Log in.')
+        return jsonify({'message':'User already exist. Please Log in.','status':0})
 
 #decorator for verifying the JWT token
 def token_required(f):
@@ -92,16 +105,16 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = None
         #jwt is passed in the request header
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
+        if 'X-Access-Token' in request.headers:
+            token = request.headers['X-Access-Token']
         #return 401 if token is not passed
         if not token:
-            return make_response('Token is missing!', 401)
+            return jsonify({'message':'Token is missing!'})
         try:
             payload = jwt.decode(token, "secret", algorithms=["HS256"])
             current_user = User.query.filter_by(id=payload['id']).first()
         except:
-            return make_response('Token is invalid !!')
+            return jsonify({'message':'Token is invalid !!'})
         return f(*args, **kwargs)
     return decorated
 
@@ -110,27 +123,25 @@ def token_required(f):
 @app.route('/login', methods=['POST'])
 def Userlogin():
     auth = request.data
-    auth=json.loads(auth)
-    print(auth)
-    auth['username']="Omkar Gaikwad"
-    if not auth or not auth['username'] or not auth['password']:
+    auth = json.loads(auth)
+    if not auth or not auth.get('username') or not auth.get('password'):
         return make_response('Username and password should not be blank!', 401)
-    user = User.query.filter_by(username = auth['username']).first()
+    user = User.query.filter_by(username = auth.get('username')).first()
 
     if not user:
-        return make_response('User does not exist!', 401)
-    if check_password_hash(user.password, auth['password']):
+        return jsonify({'message':'User does not exist please login'})
+    if check_password_hash(user.password, auth.get('password')):
         #generate the jwt token
         token = jwt.encode({
         'id': user.id,
-        'exp' : datetime.utcnow() + timedelta(minutes= 30)
+        'exp' : datetime.utcnow() + timedelta(minutes= 120)
         }, "secret",algorithm="HS256")
-        return make_response(token)
-    return make_response('Password is wrong!', 403)
+        return jsonify({'message':'Login Successful!', 'token':token, 'status':1})
+    return jsonify({'message':'User Name or Password is wrong!','status':0})
 
 #get tower data
 @app.route('/tower')
-#@token_required
+@token_required
 def gettower():
     addtowernames = Tower.query.all()
     toweroutput = []
@@ -141,7 +152,7 @@ def gettower():
 
 #get Status data
 @app.route('/status')
-#@token_required
+@token_required
 def getstatus():
     statuss = Status.query.all()
     statusoutput = []
@@ -152,7 +163,7 @@ def getstatus():
 
 #get resource Name
 @app.route('/resource')
-#@token_required
+@token_required
 def getresourcename():
     resources = User.query.all()
     resourceoutput = []
@@ -163,7 +174,7 @@ def getresourcename():
 
 #get responsible Name
 @app.route('/responsible')
-#@token_required
+@token_required
 def getrsponsiblename():
     respo = User.query.all()
     respon = []
@@ -173,48 +184,12 @@ def getrsponsiblename():
 
 
 # add form data
-@app.route('/createform/add', methods=['POST'])
-def addForm():
-    datas=request.data
-    pythonData=json.loads(datas)
-    tower=pythonData['tower']
-    site=pythonData['site']
-    tasknumber=pythonData['task']
-    details=pythonData['details']
-    Receiveddate=pythonData['receivedDate']
-    Activitydate=pythonData['activityDate']
-    # Resource=pythonData['resources']
-    Responsible=pythonData['responsible']
-    status=pythonData['status']
-    weeklyform = Weeklytracker(
-    public_id = "123",
-    tower = tower,
-    site = site,
-    tasknumber =int(tasknumber),
-    Details = details,
-    # Receiveddate = datetime.strptime(Receiveddate, '%Y-%m-%d'),
-    # Activitydate = datetime.strptime(Activitydate,'%Y-%m-%d'),
-    Receiveddate = Receiveddate,
-    Activitydate = Activitydate,
-    Resource = "hello omkar",
-    Responsible = Responsible,
-    status = status
-    )
-    
-    # db.session.add(weeklyform)
-    # db.session.commit()
-    # return make_response('Form Added Successfully')
-    
-    # print("datas:")
-    print(pythonData['activityDate'])
-    return jsonify({'message':'App Build Successful!'})
-
 @app.route('/createform', methods=['POST'])
-#@token_required
+@token_required
 def addform():
     datas = request.data
-    datas=json.loads(datas)
-    public_id = "1"
+    datas = json.loads(datas)
+    public_id = datas.get('public_id')
     tower = datas.get('tower')
     site = datas.get('site')
     tasknumber = datas.get('tasknumber')
@@ -223,29 +198,40 @@ def addform():
     Activitydate = datas.get('Activitydate')
     Resource = datas.get('Resource')
     Responsible = datas.get('Responsible')
-    status = datas.get('Status')
-    weeklyform = Weeklytracker(
-    public_id = 5959,
+    status = datas.get('status')
+    weeklyfrom = Weeklytracker(
+    public_id = public_id,
     tower = tower,
     site = site,
     tasknumber =tasknumber,
     Details = Details,
-    Receiveddate = datetime.strptime(Receiveddate, '%Y-%m-%d'),
-    Activitydate = datetime.strptime(Activitydate, '%Y-%m-%d'),
+    Receiveddate = datetime.strptime(Receiveddate, '%Y-%m-%dT%H:%M'),
+    Activitydate = datetime.strptime(Activitydate,'%Y-%m-%dT%H:%M'),
     Resource = Resource,
     Responsible = Responsible,
     status = status
     )
+    #insert Weeklyform
     try:
-        db.session.add(weeklyform)
+        db.session.add(weeklyfrom)
         db.session.commit()
-        return make_response('Form Added Successfully')
+        user = User.query.filter_by(username=Resource).first()
+        email1 = user.email
+        user1 = User.query.filter_by(username=Responsible).first()
+        email2 = user1.email
+        msg = Message('Weekly Activity Tracker :'+Activitydate[:10], sender = 'rahulwmg767@gmail.com', recipients = [email1])
+        msg.body = "Hello "+Resource+","+"\n"+"Please refer below details for upcoming weekend Activity."+"\n"+"Task Number: " + tasknumber + "\n" + "Planned resource: " + Resource + "\n" + "Activity Date: " + Activitydate[:10] + "\n" + "Tower: "+tower+"\n"+"Site name: "+site+"\n"+"Task status at form submission: "+status
+        mail.send(msg)
+        msg = Message('Weekly Activity Tracker :'+Activitydate[:10], sender = 'rahulwmg767@gmail.com', recipients = [email2])
+        msg.body = "Hello "+Responsible+","+"\n"+"Please refer below details for upcoming weekend Activity."+"\n"+"Task Number: " + tasknumber + "\n" + "Planned resource: " + Resource + "\n" + "Activity Date: " + Activitydate[:10] + "\n" + "Tower: "+tower+"\n"+"Site name: "+site+"\n"+"Task status at form submission: "+status
+        mail.send(msg)
+        return jsonify({'message':'Form Added Successfully!'})
     except:
-        return make_response('Error', 401)
+        return jsonify({'message':'Error while Adding Form'})
 
 #export form data
-@app.route('/exportdata')
-#@token_required
+@app.route('/getdata')
+@token_required
 def getformdata():
     weeks = Weeklytracker.query.all()
     weekform = []
@@ -263,66 +249,112 @@ def getformdata():
         'Receiveddate' : str(week.Receiveddate),
         'Activitydate' : str(week.Activitydate),
         })
-    df = pd.DataFrame(weekform)
-    df['Receiveddate'] = df['Receiveddate'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d %H:%M:%S'))
-    df['Received_date'] = [d.date() for d in df['Receiveddate']]
-    df['Received_time'] = [d.time() for d in df['Receiveddate']]
-    df['Activitydate'] = df['Activitydate'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d %H:%M:%S'))
-    df['Activity_date'] = [d.date() for d in df['Activitydate']]
-    df['Activity_time'] = [d.time() for d in df['Activitydate']]
-    df.pop("Receiveddate")
-    df.pop("Activitydate")
-    df.to_csv('formdata.csv', index=False)
-    return make_response('Exported Form Data into csv')
+    return jsonify(weekform)
 
 
-#update form Data
-@app.route('/update', methods=['POST'])
-#@token_required
-def updatedata():
-    adding = request.form
-    id = adding.get('id')
-    this_form = Weeklytracker.query.filter_by(id=id).first()
-    tower = adding.get('tower')
-    site = adding.get('site')
-    Details = adding.get('Details')
-    Receiveddate = str(adding.get('Receiveddate'))
-    Activitydate = str(adding.get('Activitydate'))
-    Resource = adding.get('Resource')
-    Responsible = adding.get('Responsible')
-    status = adding.get('status')
+@app.route('/getdata1')
+@token_required
+def getformdata1():
+    id = None
     if 'x-access-token' in request.headers:
         token = request.headers['x-access-token']
         payload = jwt.decode(token, "secret", algorithms=["HS256"])
-        current_user = User.query.filter_by(id=payload['id']).first()
-        flag = payload['id']
-    this_form.public_id = flag
+        id = payload['id']
+    weeks = Weeklytracker.query.filter_by(public_id=id).all()
+    weekform = []
+    for week in weeks:
+        weekform.append({
+        'id' : week.id,
+        'public_id' : week.public_id,
+        'tower' : week.tower,
+        'site' : week.site,
+        'tasknumber' : week.tasknumber,
+        'Details' : week.Details,
+        'Resource' : week.Resource,
+        'Responsible' : week.Responsible,
+        'status' : week.status,
+        'Receiveddate' : str(week.Receiveddate),
+        'Activitydate' : str(week.Activitydate),
+        })
+    return jsonify(weekform)
+@app.route('/download')
+def exportdata():
+    weeks = Weeklytracker.query.all()
+    weekform = []
+    for week in weeks:
+        s = str(week.Receiveddate)
+        t = str(week.Activitydate)
+        Received_date,Received_time = s.split(' ')
+        Activity_date,Activity_time = t.split(' ')
+        weekform.append({
+        'Received_date' : Received_date,
+        'Received_time' : Received_time,
+        'Activity_date' : Activity_date,
+        'Activity_time' : Activity_time,
+        'id' : week.id,
+        'public_id' : week.public_id,
+        'tower' : week.tower,
+        'site' : week.site,
+        'tasknumber' : week.tasknumber,
+        'Details' : week.Details,
+        'Resource' : week.Resource,
+        'Responsible' : week.Responsible,
+        'status' : week.status
+        })
+    return jsonify(weekform)
+#update form Data
+@app.route('/update', methods=['POST'])
+@token_required
+def updatedata():
+    adding = request.data
+    adding = json.loads(adding)
+    id = adding.get('id')
+    this_form = Weeklytracker.query.filter_by(id=id).first()
+    tower = adding.get('tower')
+    public_id = adding.get('public_id')
+    site = adding.get('site')
+    tasknumber = adding.get('tasknumber')
+    Details = adding.get('Details')
+    Receiveddate = str(adding.get('Receiveddate'))
+    if Receiveddate == 'None':
+        Receiveddate = str(datetime.now())
+        Receiveddate = Receiveddate.replace(" ","")
+        Receiveddate = Receiveddate[:10] + 'T' + Receiveddate[10:15]
+    Activitydate = str(adding.get('Activitydate'))
+    if Activitydate == 'None':
+        Activitydate = str(datetime.now())
+        Activitydate = Activitydate.replace(" ","")
+        Activitydate = Activitydate[:10] + 'T' + Activitydate[10:15]
+    Resource = adding.get('Resource')
+    Responsible = adding.get('Responsible')
+    status = adding.get('status')
+    this_form.public_id = public_id
     this_form.tower = tower
     this_form.site = site
+    this_form.tasknumber = tasknumber
     this_form.Details = Details
-    this_form.Receiveddate = datetime.strptime(Receiveddate, '%d-%m-%Y %H:%M')
-    this_form.Activitydate = datetime.strptime(Activitydate,'%d-%m-%Y %H:%M')
+    this_form.Receiveddate = datetime.strptime(Receiveddate,'%Y-%m-%dT%H:%M')
+    this_form.Activitydate = datetime.strptime(Activitydate,'%Y-%m-%dT%H:%M')
     this_form.Resource = Resource
     this_form.Responsible = Responsible
     this_form.status = status
     db.session.commit()
-    return make_response('Done')
-
-
+    return jsonify({'message':'form updated Successfully!'})
 #delete form Data
 @app.route('/delete', methods=['POST'])
-#@token_required
+@token_required
 def deletedata():
-    deletes = request.form
-    id = deletes.get('id')
+    deletes = request.data
+    deletes = json.loads(deletes)
+    id = deletes
     delete_data = Weeklytracker.query.filter_by(id=id).first()
     db.session.delete(delete_data)
     db.session.commit()
-    return make_response('Data Deleted!')
+    return jsonify({'message':'Data Deleted!'})
 
 @app.route('/')
 def index():
-    return make_response('App Build Successful!')
+    return jsonify({'message':'App build Successful'})
 
 if __name__=="__main__":
     app.run(debug=True)

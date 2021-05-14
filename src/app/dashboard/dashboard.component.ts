@@ -14,6 +14,8 @@ import { Timeline } from '../shared/timeline.model';
 export class DashboardComponent implements OnInit {
 
 
+  pEvent=false;
+  upEvent=false;
   currentDate=(((new Date()).toISOString()).split('T',1)).toString();
    date:any=[];
   constructor(
@@ -25,6 +27,8 @@ export class DashboardComponent implements OnInit {
     userData: getFormData[];
     dataObj:getFormData[];
     timeline: Timeline[]=[];
+    pTimeline: Timeline[]=[];
+    upTimeline: Timeline[]=[];
     
   ngOnInit(): void {
     this.dataStorageService.getWeeklyActivityData().subscribe(
@@ -34,8 +38,37 @@ export class DashboardComponent implements OnInit {
         this.userData=res; 
    
         let i=0;
+        let k=0;
+        let j=0;
         for(let data of this.userData){
           let actDate=data.Activitydate.split(' ',1).toString();
+          // if(+actDate < +this.currentDate){
+          //   this.pTimeline[k]=new Timeline(
+          //     data.site,
+          //     +data.tasknumber,
+          //     data.tower,
+          //     data.Details,
+          //     data.Resources,
+          //     data.Responsible,
+          //     data.status,
+          //     data.Receiveddate,
+          //     actDate
+          //     );
+          //     k++;
+          // }else{
+          //   this.upTimeline[j]=new Timeline(
+          //     data.site,
+          //     +data.tasknumber,
+          //     data.tower,
+          //     data.Details,
+          //     data.Resources,
+          //     data.Responsible,
+          //     data.status,
+          //     data.Receiveddate,
+          //     actDate
+          //     );
+          //     j++;
+          // }
           this.timeline[i]=new Timeline(
             data.site,
             +data.tasknumber,
@@ -56,8 +89,24 @@ export class DashboardComponent implements OnInit {
         return new Date(a.activityDate).valueOf() - new Date(b.activityDate).valueOf(); 
       });
 
-      console.log("After:");
-        console.log(this.timeline)
+      for(i=0;i<this.timeline.length;i++){
+        if( this.timeline[i].activityDate < this.currentDate){
+          this.pTimeline[i]=this.timeline[i];
+        }
+        else{
+          this.upTimeline[i]=this.timeline[i];
+        }
+      }
+
+    
+      
+      this.upTimeline = this.upTimeline.filter(value => Object.keys(value).length !== 0);
+
+      console.log("Previous:");
+        console.log(this.pTimeline);
+        console.log("Upcoming:");
+        console.log(this.upTimeline);
+
 
       }
 
@@ -71,9 +120,17 @@ export class DashboardComponent implements OnInit {
     
   }
 
+  onChangeEventPrevious(){
+    this.pEvent=!this.pEvent;
+    this.upEvent=false;
+  }
+  onChangeEventUpcoming(){
+    this.upEvent=!this.upEvent;
+    this.pEvent=false;
+  }
 
 
-  timelineUser=this.timeLine.userTestStatus;
+  //timelineUser=this.timeLine.userTestStatus;
   
 
 

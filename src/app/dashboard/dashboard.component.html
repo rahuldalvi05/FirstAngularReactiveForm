@@ -1,7 +1,115 @@
-<div class="container">
-    <div class="main-timeline">
-    
-                            <!-- start experience section-->
+<div class="container"
+style="margin-top:20px"
+
+>
+    <div>
+        <div class="row">
+      <div class="col-sm"
+      style="text-align: center;"
+      >
+        <button type="button" class="btn btn-info"
+        (click)="onChangeEventPrevious()"
+        >PREVIOUS EVENTS </button>
+      </div>
+      <div class="col-sm"
+        style="text-align: center;"  
+      >
+      <button type="button" class="btn btn-info"
+        
+        >{{currentDate  | date:'medium'}}</button>
+      </div>
+      <div class="col-sm"
+      style="text-align: center;"
+      >
+        <button type="button" class="btn btn-info"
+        (click)="onChangeEventUpcoming()"
+        >UPCOMING EVENTS</button>
+      </div>
+      
+    </div>
+    </div>
+  </div>
+
+
+  <div *ngIf="pEvent">
+    <div class="container">
+        <hr>
+        <h3
+        class="p1"
+        style="text-align: center;
+        color:#AE0E36FF;
+        "
+        >
+        PREVIOUS EVENTS
+    </h3>
+        <div class="main-timeline">
+        
+                                <div class="timeline" *ngFor="let user of pTimeline">
+                                    <div class="icon"></div>
+                                    <div class="date-content">
+                                        <div class="date-outer">
+                                            <span class="date">
+                                                    <span class="month">Event Date</span>
+                                            <span class="year">{{user.activityDate}}</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h5 class="title">{{user.details}}</h5>
+                                        <p class="description">
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur ex sit amet massa scelerisque scelerisque. Aliquam erat volutpat. Aenean interdum finibus efficitur. Praesent dapibus dolor felis, eu ultrices elit molestie.
+                                        </p>
+                                    </div>
+                                </div>
+        
+                            </div>
+        </div>
+
+  </div>
+
+  <div *ngIf="upEvent">
+    <div class="container">
+        <hr>
+        <h3
+        class="p1"
+        style="text-align: center;
+        color:#AE0E36FF;
+        "
+        >
+        UPCOMING EVENTS
+    </h3>
+        <div class="main-timeline">
+            
+           
+                                <div class="timeline" *ngFor="let user of upTimeline">
+                                    <div class="icon"></div>
+                                    <div class="date-content">
+                                        <div class="date-outer">
+                                            <span class="date">
+                                                    <span class="month">Event Date</span>
+                                            <span class="year">{{user.activityDate}}</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h5 class="title">{{user.details}}</h5>
+                                        <p class="description">
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur ex sit amet massa scelerisque scelerisque. Aliquam erat volutpat. Aenean interdum finibus efficitur. Praesent dapibus dolor felis, eu ultrices elit molestie.
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- end experience section-->
+        
+                               
+                                <!-- end experience section-->
+        
+                            </div>
+        </div>
+  </div>
+
+<!-- <div class="container">
+    <hr>
+    <div class="main-timeline">                 
                             <div class="timeline" *ngFor="let user of timeline">
                                 <div class="icon"></div>
                                 <div class="date-content">
@@ -18,11 +126,7 @@
                                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed efficitur ex sit amet massa scelerisque scelerisque. Aliquam erat volutpat. Aenean interdum finibus efficitur. Praesent dapibus dolor felis, eu ultrices elit molestie.
                                     </p>
                                 </div>
-                            </div>
-                            <!-- end experience section-->
-    
-                           
-                            <!-- end experience section-->
-    
+                            </div>    
                         </div>
-    </div>
+    </div> -->
+

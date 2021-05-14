@@ -58,34 +58,11 @@ export class AuthComponent implements OnInit {
           console.log(resData)
           this.isLoginMode=false;
           this.router.navigate(['/watTable']);
-          //console.log("Res Data:"+resData);
+        
         }
       );
-      
-    //  authObs = this.authService.login(form.value.email,form.value.password)
-    //   this.authService.logindata(form.value).subscribe(
-    //     resData=>{
-    //       console.log(resData)
-    //     }
-    //   );
-      
-
-    }else{
-     //authObs= this.authService.signup(form.value.email,form.value.password)
     }
-    // authObs.subscribe(
-    //   data=>{
-    //     console.log(data);
-    //     this.isLoading=false;
-    //     this.router.navigate(['/watTable']);
-    //   },error=>{
-    //     console.log(error);
-    //     this.error='An error Occured!';
-    //     this.isLoading=false;
-        
-    //   }
-    // )
-    
+  
     form.reset()
 
   }
@@ -117,19 +94,7 @@ export class AuthComponent implements OnInit {
         }
         }
     )
-    // this.dataStorageService.userdata(this.register).subscribe((res: any) => {
-    //   this.data = res;
-    //   console.log(this.register);
-    //   console.log(res.status)
-    //   this.status = res.status;
-    //   this.isLoginMode=!this.isLoginMode;
-    //   if(this.status == 1){
-    //     this.router.navigate(['/auth']);
-    //   }
-    //   else{
-    //     this.message = this.data.message;
-    //   }
-    // })
+
   }
  
 

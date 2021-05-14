@@ -171,7 +171,7 @@ export class AuthService{
     autoLogout(expirationDate: number){
         this.tokenExpirationTimer= setTimeout(()=>{
             this.logout();
-        },5000000)
+        },expirationDate)
     }
 
     // private handleAuthentication(email: string, userId:string, token: string, expiresIn: number){
@@ -184,18 +184,14 @@ export class AuthService{
     private handleAuthenticationData(userName:string,token: string, expiresIn: number){
         const expirationDate2=new Date(expiresIn*1000);
         console.log(expirationDate2);
-        const expirationDate=new Date((new Date().getTime()) + expiresIn)
-        const user=new User(userName,token,expirationDate);
+        const expirationDate=new Date(expiresIn)
+        const user=new User(userName,token,expirationDate2);
         this.user.next(user);
-        this.autoLogout(expirationDate.getTime());    
+        this.autoLogout(expiresIn*1000);    
         localStorage.setItem('userData',JSON.stringify(user));
     }
 
     getUser(){
         return this.user.value;
-    }
-    // isLoggedIn(): boolean{
-    //     return this.user ? true : false;
-    // }
-   
+    }   
 }   
