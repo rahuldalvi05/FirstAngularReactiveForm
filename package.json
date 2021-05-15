@@ -21,6 +21,8 @@
     "@angular/platform-browser-dynamic": "~11.1.2",
     "@angular/router": "~11.1.2",
     "@ng-bootstrap/ng-bootstrap": "^9.0.2",
+    "@ngneat/helipopper": "^3.1.1",
+    "@ngneat/overview": "^1.0.0",
     "bootstrap": "^4.6.0",
     "jwt-decode": "^3.1.2",
     "rxjs": "~6.6.0",

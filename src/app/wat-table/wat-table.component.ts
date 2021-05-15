@@ -13,6 +13,12 @@ import { Timeline } from '../shared/timeline.model';
 })
 export class WatTableComponent implements OnInit {
 
+
+  popoverTitle = 'Popover title';
+  popoverMessage = 'Popover description';
+  confirmClicked = false;
+  cancelClicked = false;
+
   constructor(
     private timeLine : AppService,
     private router: Router,
@@ -53,8 +59,15 @@ export class WatTableComponent implements OnInit {
   });
     
   }
+
+  clickMethod(name: string) {
+    if(confirm("Are you sure to delete "+name)) {
+      console.log("Implement delete functionality here");
+    }
+  }
   deletedata(id)
   {
+    
     this.dataStorageService.deldata(id).subscribe(res =>{})
     console.log('Deleted Successfully');
     window.location.reload();
