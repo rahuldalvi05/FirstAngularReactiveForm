@@ -103,8 +103,8 @@
                 <label for="Responsible">Responsible</label>
                 <select class="form-control" id="Responsible" formControlName="Responsible"> 
                   <option >Please Select</option>  
-                  <option value="legacy">Legacy</option>
-                  <option value="mes">  MES</option>
+                  <option *ngFor="let obj of responsible">{{obj}}</option>
+                  
                 </select>
                 <span
                 class="help-block"

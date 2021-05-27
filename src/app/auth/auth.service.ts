@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { User } from "./user.model";
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { Router } from "@angular/router";
 import { Register } from "./register.model";
 import jwt_decode from "jwt-decode";
@@ -126,25 +126,21 @@ export class AuthService{
     }
 
     autoLogout(expirationDate: number){
+
+        const time=expirationDate*1000;
         this.tokenExpirationTimer= setTimeout(()=>{
             this.logout();
-        },50000000)
+        },time);
     }
-
-    // private handleAuthentication(email: string, userId:string, token: string, expiresIn: number){
-    //     const expirationDate=new Date(new Date().getTime() + expiresIn*1000)
-    //     const user=new User(email,userId,token,expirationDate);
-    //     this.user.next(user);
-    //     this.autoLogout(expiresIn*1000);    
-    //     localStorage.setItem('userData',JSON.stringify(user))
-    // }
+    
     private handleAuthenticationData(userName:string,token: string, expiresIn: number){
         const expirationDate2=new Date(expiresIn*1000);
-        console.log(expirationDate2.getTime());
+        console.log("timeL")
+        console.log(expiresIn);
         const expirationDate=new Date(expiresIn)
         const user=new User(userName,token,expirationDate2);
         this.user.next(user);
-        this.autoLogout(expirationDate2.getTime());    
+        this.autoLogout(expiresIn);    
         localStorage.setItem('userData',JSON.stringify(user));
     }
 
