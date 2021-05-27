@@ -38,37 +38,9 @@ export class DashboardComponent implements OnInit {
         this.userData=res; 
    
         let i=0;
-        let k=0;
-        let j=0;
         for(let data of this.userData){
           let actDate=data.Activitydate.split(' ',1).toString();
-          // if(+actDate < +this.currentDate){
-          //   this.pTimeline[k]=new Timeline(
-          //     data.site,
-          //     +data.tasknumber,
-          //     data.tower,
-          //     data.Details,
-          //     data.Resources,
-          //     data.Responsible,
-          //     data.status,
-          //     data.Receiveddate,
-          //     actDate
-          //     );
-          //     k++;
-          // }else{
-          //   this.upTimeline[j]=new Timeline(
-          //     data.site,
-          //     +data.tasknumber,
-          //     data.tower,
-          //     data.Details,
-          //     data.Resources,
-          //     data.Responsible,
-          //     data.status,
-          //     data.Receiveddate,
-          //     actDate
-          //     );
-          //     j++;
-          // }
+          
           this.timeline[i]=new Timeline(
             data.site,
             +data.tasknumber,

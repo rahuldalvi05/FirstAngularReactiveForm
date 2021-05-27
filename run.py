@@ -196,7 +196,7 @@ def addform():
     Details = datas.get('Details')
     Receiveddate = datas.get('Receiveddate')
     Activitydate = datas.get('Activitydate')
-    Resource = datas.get('Resource')
+    Resource = datas.get('Resources')
     Responsible = datas.get('Responsible')
     status = datas.get('status')
     weeklyfrom = Weeklytracker(
@@ -215,8 +215,11 @@ def addform():
     try:
         db.session.add(weeklyfrom)
         db.session.commit()
+        print("hello")
         user = User.query.filter_by(username=Resource).first()
         email1 = user.email
+        print(Resource)
+        print(email1)
         user1 = User.query.filter_by(username=Responsible).first()
         email2 = user1.email
         msg = Message('Weekly Activity Tracker :'+Activitydate[:10], sender = 'rahulwmg767@gmail.com', recipients = [email1])

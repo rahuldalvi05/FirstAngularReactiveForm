@@ -60,8 +60,8 @@ style="margin: 45px;"
         <div 
         class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto form p-4"
         >
-        <div class="alert alert-danger" *ngIf="error">
-          {{error}}
+        <div class="alert alert-danger" *ngIf="errorMessage">
+          {{errorMessage}}
         </div>
         <div *ngIf="isLoading" style="text-align: center;">
             <app-loading-spinner></app-loading-spinner>

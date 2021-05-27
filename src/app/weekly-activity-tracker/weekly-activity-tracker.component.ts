@@ -85,7 +85,8 @@ export class WeeklyActivityTrackerComponent implements OnInit{
             
             this.resources.push(value.resourcename)
           }
-          //console.log(this.resources);
+          console.log("res")
+          console.log(this.resources);
         }
       )
 

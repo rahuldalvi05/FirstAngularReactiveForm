@@ -17,7 +17,7 @@ export class AuthComponent implements OnInit {
   register = new Register();
   isLoginMode=true;
   isLoading=false;
-  error: string=null;
+  errorMessage: string=null;
 
  
 
@@ -44,21 +44,30 @@ export class AuthComponent implements OnInit {
     this.isLoading=true;
     if(this.isLoginMode){ 
       const login=new Login(form.value.email,form.value.password);
-      console.log(login);
+     // console.log(login);
 
      
 
       this.authService.logindata(login).subscribe(
 
         resData=>{
+          console.log("backend")
+          console.log(resData)
           this.dataStorageService.userName.next(login.password);
           this.dataStorageService.userName.subscribe(res=>{
-            console.log("rahul"+res);
+            console.log("rahul");
+            console.log(res);
           })
-          console.log(resData)
+          
           this.isLoginMode=false;
           this.router.navigate(['/watTable']);
         
+        },error=>{
+
+          this.errorMessage="Invalid Password or username"
+          console.log("error msg");
+          console.log(error)
+          this.isLoading = false;
         }
       );
     }

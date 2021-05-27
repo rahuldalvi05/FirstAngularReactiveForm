@@ -39,32 +39,10 @@ export class WatTableComponent implements OnInit {
       this.userData=res;  
     }
   )
-    
-  this.userTimeline=this.timeLine.getTimeline();
-    
-    this.subscription=this.timeLine.timelineChanged.subscribe(
-      (timelines: Timeline[])=>{
-        this.userTimeline=timelines;
 
-      
-      }
-    )
-
-
-    console.log(this.userTimeline);
-    
-    this.userTimeline.sort(function(a, b){ 
-
-      return new Date(b.activityDate).valueOf() - new Date(a.activityDate).valueOf(); 
-  });
-    
   }
 
-  clickMethod(name: string) {
-    if(confirm("Are you sure to delete "+name)) {
-      console.log("Implement delete functionality here");
-    }
-  }
+
   deletedata(id)
   {
     

@@ -74,7 +74,6 @@ export class AuthService{
     logindata(loginData: Login){
 
         
-        
 
         return this.http.post<Authdata>('http://127.0.0.1:5000/login',
             loginData
@@ -92,48 +91,6 @@ export class AuthService{
             )
         )
     }
-
-    // signup(email: string, password: string){
-    //  return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCwMu8y-W90nj0YgcCpDISsBj7M94wekBw',{
-    //         email: email,
-    //         password:password,
-    //         returnSecureToken:true
-    //     }).pipe(
-    //         tap(
-    //             resData=>{
-    //                 this.handleAuthentication(
-    //                     resData.email,
-    //                     resData.localId,
-    //                     resData.idToken,
-    //                     +resData.expiresIn
-    //                 )
-                
-    //             }
-    //         )
-    //     )
-    // }
-
-
-   
-    // login(email: string, password:string){
-       
-    //     return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCwMu8y-W90nj0YgcCpDISsBj7M94wekBw',{
-    //         email: email,
-    //         password:password,
-    //         returnSecureToken:true
-    //     }).pipe(
-    //         tap(
-    //             resData=>{
-    //                 this.handleAuthentication(
-    //                     resData.email,
-    //                     resData.localId,
-    //                     resData.idToken,
-    //                     +resData.expiresIn)
-                
-    //             }
-    //         )
-    //     )
-    // }
 
     logout(){
         this.user.next(null);
@@ -171,7 +128,7 @@ export class AuthService{
     autoLogout(expirationDate: number){
         this.tokenExpirationTimer= setTimeout(()=>{
             this.logout();
-        },expirationDate)
+        },50000000)
     }
 
     // private handleAuthentication(email: string, userId:string, token: string, expiresIn: number){
@@ -183,11 +140,11 @@ export class AuthService{
     // }
     private handleAuthenticationData(userName:string,token: string, expiresIn: number){
         const expirationDate2=new Date(expiresIn*1000);
-        console.log(expirationDate2);
+        console.log(expirationDate2.getTime());
         const expirationDate=new Date(expiresIn)
         const user=new User(userName,token,expirationDate2);
         this.user.next(user);
-        this.autoLogout(expiresIn*1000);    
+        this.autoLogout(expirationDate2.getTime());    
         localStorage.setItem('userData',JSON.stringify(user));
     }
 

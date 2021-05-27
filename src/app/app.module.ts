@@ -16,6 +16,8 @@ import { AuthComponent } from './auth/auth.component';
 import { LoadingSpinner } from './shared/loading/loading-spinner.component';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { TippyModule } from '@ngneat/helipopper';
+import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
+
 
 @NgModule({
   declarations: [
@@ -34,7 +36,10 @@ import { TippyModule } from '@ngneat/helipopper';
     NgbModule,
     HttpClientModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ConfirmationPopoverModule.forRoot({
+      confirmButtonType: 'danger', // set defaults here
+    })
  
   
   ],

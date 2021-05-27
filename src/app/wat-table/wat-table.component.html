@@ -55,7 +55,14 @@ td.c {
                 routerLink="/wat/{{obj.id}}"
                 >Update</button>
                 <button type="button" class="btn btn-link" style="margin-right: 0px;"
-                (click)="deletedata(obj.id)"
+                
+                class="btn btn-outline-secondary"
+                mwlConfirmationPopover
+                
+                [popoverMessage]="popoverMessage"
+                placement="left"
+                (confirm)="deletedata(obj.id)"
+                (cancel)="cancelClicked = true"
                 >Delete</button>
                   
             </td>

@@ -77,6 +77,7 @@
                 <input class="form-control" type="datetime-local" value="" id="Activitydate"
                 formControlName="Activitydate"
                 [min]="dateLimit"
+                required
                 >
                  
                 </div>
@@ -85,8 +86,10 @@
                 <label for="Resources">Planned Resources</label>
                 <select class="form-control" id="Resources" formControlName="Resources">
                   <option >Please Select</option>  
-                  <option value="legacy">Legacy</option>
-                  <option value="mes">MES</option>
+                  <option 
+                  *ngFor="let obj of resources"
+                  >{{obj}}</option>
+                  
                   
                 </select>
                 <span
